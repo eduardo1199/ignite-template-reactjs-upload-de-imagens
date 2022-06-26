@@ -39,9 +39,8 @@ export default function Home(): JSX.Element {
     isFetchingNextPage,
     fetchNextPage,
     hasNextPage,
-  } = useInfiniteQuery('images', getImages, {
-    getNextPageParam: (lastPage, pages) =>
-      lastPage.after ? lastPage.after : null,
+  } = useInfiniteQuery('images', pageParam => getImages(pageParam), {
+    getNextPageParam: lastPage => (lastPage.after ? lastPage.after : null),
   });
 
   const formattedData: Array<Images> = useMemo(
@@ -62,7 +61,7 @@ export default function Home(): JSX.Element {
       <Header />
 
       <Box maxW={1120} px={20} mx="auto" my={20}>
-        <CardList cards={formattedData} />
+        <CardList cards={data?.pages[0].data} />
         {(hasNextPage || isFetchingNextPage) && (
           <Button onClick={() => fetchNextPage()}>
             {isFetchingNextPage ? 'Carregando...' : 'Carregar mais'}
